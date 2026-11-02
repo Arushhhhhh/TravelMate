@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tourist Guides - TravelMate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar-fixes.css') }}">
+  
+  <script src="{{ url_for('static', filename='js/navbar-loader.js') }}"></script>
+</head>
+
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
+
+  <!-- Navbar -->
+  <div id="navbar-container"></div>
+
+  <!-- Hero Section -->
+  <section class="bg-white-600 text-white py-2">
+    <div class="container mx-auto px-6 text-center">
+      <h1 class="text-4xl font-bold mb-4">Find the Perfect Tourist Guide</h1>
+      <p class="text-lg mb-6">
+        Explore cities, heritage sites, and adventures with expert guides
+      </p>
+      <div class="max-w-2xl mx-auto">
+        <input type="text" id="search-input" placeholder="Search guides by name, specialty, or location..."
+          class="w-full px-4 py-3 border border-black rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          oninput="filterGuides(this.value)" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Guides Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">
+        Available Tourist Guides
+      </h2>
+      <div id="guides-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Guides will be injected dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl font-bold text-gray-800 mb-12 text-center">
+        Why Choose Our Tourist Guides?
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="text-center p-6 bg-gray-50 rounded-xl shadow-sm">
+          <span class="text-blue-600 text-5xl">⭐</span>
+          <h3 class="text-xl font-semibold text-gray-800 mt-4">Top Rated</h3>
+          <p class="text-gray-600 mt-2">
+            Verified guides with exceptional reviews
+          </p>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-xl shadow-sm">
+          <span class="text-blue-600 text-5xl">🌍</span>
+          <h3 class="text-xl font-semibold text-gray-800 mt-4">
+            Multilingual
+          </h3>
+          <p class="text-gray-600 mt-2">
+            Communicate with guides in your language
+          </p>
+        </div>
+        <div class="text-center p-6 bg-gray-50 rounded-xl shadow-sm">
+          <span class="text-blue-600 text-5xl">💡</span>
+          <h3 class="text-xl font-semibold text-gray-800 mt-4">Local Experts</h3>
+          <p class="text-gray-600 mt-2">
+            Explore hidden gems with knowledgeable guides
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating Contact Button -->
+  <!-- <button class="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition"
+    onclick="showContactModal()">
+    📞
+  </button> -->
+
+  <!-- Contact Modal -->
+  <!-- <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full shadow-lg">
+      <h3 class="text-2xl font-bold text-gray-800 mb-4">Contact Us</h3>
+      <p class="text-gray-600 mb-6">
+        Need help finding the right guide? We're here for you.
+      </p>
+      <form class="space-y-4">
+        <input type="text" placeholder="Your Name"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <input type="email" placeholder="Your Email"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <textarea placeholder="Your Message"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+          Send Message
+        </button>
+      </form>
+      <button class="mt-4 w-full text-gray-600 hover:text-gray-800" onclick="closeModal('contact-modal')">
+        Cancel
+      </button>
+    </div>
+  </div> -->
+
+  <!-- Scripts -->
+  <script type="module"  src="{{ url_for('static', filename='js/guides.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <title>Travel Packages - TravelMate</title>
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar-fixes.css') }}">
+  <!-- Navbar Loader Script -->
+  <script src="{{ url_for('static', filename='js/navbar-loader.js') }}"></script>
+  <!-- Packages functionality -->
+  <script src="{{ url_for('static', filename='js/packages.js') }}"></script>
+  
+  <style>
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .animate-fadeInUp {
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      transform: translateY(-2px);
+    }
+    
+    .filter-section {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .package-card {
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .package-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .wishlist-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .wishlist-btn.active {
+      color: #ef4444;
+      transform: scale(1.1);
+    }
+    
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: #e5e7eb;
+      outline: none;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      cursor: pointer;
+    }
+    
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      cursor: pointer;
+      border: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+  <!-- Navigation Container - Will be populated by navbar-loader.js -->
+  <div id="navbar-container"></div>
+
+  <!-- Main Content -->
+  <section class="py-16 mt-7 pr-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-8 animate-fadeInUp">
+        <h1 class="text-4xl font-display font-bold mb-4">
+          Discover Amazing <span class="text-gradient">Travel Packages</span>
+        </h1>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Filters Sidebar -->
+        <div class="lg:w-1/4">
+          <div class="filter-section rounded-2xl p-6 sticky top-8">
+            <h3 class="text-xl font-semibold mb-6 text-slate-800">Filter Packages</h3>
+            
+            <!-- Duration Filter -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium mb-3 text-slate-700">Duration (Nights)</label>
+              <div class="space-y-3">
+                <input type="range" id="durationSlider" class="slider w-full" min="1" max="15" value="5">
+                <div class="flex justify-between text-sm text-slate-600">
+                  <span>1 Night</span>
+                  <span id="durationValue">5 Nights</span>
+                  <span>15+ Nights</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button class="duration-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-duration="2">2N/3D</button>
+                  <button class="duration-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-duration="3">3N/4D</button>
+                  <button class="duration-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-duration="5">5N/6D</button>
+                  <button class="duration-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-duration="7">7N/8D</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Flights Filter -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium mb-3 text-slate-700">Flights</label>
+              <div class="flex gap-2">
+                <button class="flight-btn flex-1 px-4 py-2 text-sm rounded-lg border border-slate-300 hover:bg-blue-50" data-flight="with">With Flight</button>
+                <button class="flight-btn flex-1 px-4 py-2 text-sm rounded-lg border border-slate-300 hover:bg-blue-50" data-flight="without">Without Flight</button>
+              </div>
+            </div>
+
+            <!-- Budget Filter -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium mb-3 text-slate-700">Budget (per person)</label>
+              <div class="space-y-3">
+                <input type="range" id="budgetSlider" class="slider w-full" min="5000" max="100000" value="25000" step="5000">
+                <div class="flex justify-between text-sm text-slate-600">
+                  <span>₹5K</span>
+                  <span id="budgetValue">₹25K</span>
+                  <span>₹1L+</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button class="budget-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-budget="10000">Under ₹10K</button>
+                  <button class="budget-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-budget="20000">Under ₹20K</button>
+                  <button class="budget-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-budget="50000">Under ₹50K</button>
+                  <button class="budget-btn px-3 py-1 text-sm rounded-full border border-slate-300 hover:bg-blue-50" data-budget="100000">Above ₹50K</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hotel Category Filter -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium mb-3 text-slate-700">Hotel Category</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" class="hotel-category" value="3" class="mr-2">
+                  <span class="text-sm">⭐⭐⭐ 3 Star & Above</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="hotel-category" value="4" class="mr-2">
+                  <span class="text-sm">⭐⭐⭐⭐ 4 Star & Above</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="hotel-category" value="5" class="mr-2">
+                  <span class="text-sm">⭐⭐⭐⭐⭐ 5 Star Only</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Cities Filter -->
+            
+
+            <!-- Themes Filter -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium mb-3 text-slate-700">Themes</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" class="theme-filter" value="beach" class="mr-2">
+                  <span class="text-sm">🏖️ Beach</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="theme-filter" value="mountain" class="mr-2">
+                  <span class="text-sm">🏔️ Mountain</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="theme-filter" value="cultural" class="mr-2">
+                  <span class="text-sm">🏛️ Cultural</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="theme-filter" value="adventure" class="mr-2">
+                  <span class="text-sm">🎯 Adventure</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="theme-filter" value="spiritual" class="mr-2">
+                  <span class="text-sm">🕉️ Spiritual</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Package Type Filter -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium mb-3 text-slate-700">Package Type</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="radio" name="package-type" value="customizable" class="mr-2">
+                  <span class="text-sm">Customizable</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="package-type" value="group" class="mr-2">
+                  <span class="text-sm">Group Package</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Premium Packages -->
+            <div class="mb-6">
+              <label class="flex items-center">
+                <input type="checkbox" id="premium-packages" class="mr-2">
+                <span class="text-sm font-medium">Premium Packages Only</span>
+              </label>
+            </div>
+
+            <!-- Clear Filters -->
+            <button id="clearFilters" class="w-full py-2 px-4 text-sm border border-slate-300 rounded-lg hover:bg-slate-50">
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Packages Grid -->
+        <div class="lg:w-3/4">
+          <!-- Sort and Results Header -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <div class="mb-4 sm:mb-0">
+              <h2 class="text-2xl font-semibold text-slate-800">
+                <span id="packageCount">24</span> Packages Found
+              </h2>
+            </div>
+            <div class="flex items-center gap-4">
+              <label class="text-sm font-medium text-slate-700">Sort by:</label>
+              <select id="sortBy" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="popularity">Popularity</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="duration">Duration</option>
+                <option value="rating">Rating</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Packages Grid -->
+          <div id="packagesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Package cards will be dynamically generated here -->
+          </div>
+
+          <!-- Load More Button -->
+          <div class="text-center mt-12">
+            <button id="loadMore" class="btn-primary px-8 py-3 rounded-full text-white font-semibold">
+              Load More Packages
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto text-center">
+      <p class="text-slate-400">© 2024 TravelMate. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+
+</html>

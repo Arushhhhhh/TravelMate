@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Emergency - TravelMate</title>
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sos.css') }}">
+  <!-- CSS styles moved to external files -->
+  <!-- Navbar Loader Script -->
+  <script src="{{ url_for('static', filename='js/navbar-loader.js') }}"></script>
+  <!-- SOS functionality -->
+  <script  src="{{ url_for('static', filename='js/sos.js') }}"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+    integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+    integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/perliedman-leaflet-control-geocoder/3.3.1/Control.Geocoder.min.js"
+    integrity="sha512-y4rf2brki6ud64Zt3p9M3AECQGPvMZnZXaAs6XMAjeOEL0LxbRCc5xtXYnBOCehixVxZoE0tIU+RcepoSIqpMw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+
+
+    :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --accent: #f59e0b;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --border: #e2e8f0;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --emergency-red: #dc2626;
+      --emergency-orange: #f59e0b;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .font-display {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings:
+        "FILL" 0,
+        "wght" 400,
+        "GRAD" 0,
+        "opsz" 24;
+    }
+
+    /* Modern Animations */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .animate-fadeInUp {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .animate-slideInLeft {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .animate-slideInRight {
+      animation: slideInRight 0.8s ease-out;
+    }
+
+    .animate-pulse-slow {
+      animation: pulse 3s infinite;
+    }
+
+    .animate-gradient {
+      animation: gradientShift 8s ease infinite;
+    }
+
+    /* Modern Utility Classes */
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hover-lift {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Disable hover effects on navbar */
+    nav .hover-lift,
+    nav .hover-lift:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      transition: none !important;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn-emergency {
+      background: linear-gradient(135deg, var(--emergency-red) 0%, #ef4444 100%);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-emergency::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-emergency:hover::before {
+      left: 100%;
+    }
+
+    .btn-emergency:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4);
+    }
+
+    @keyframes customPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.75;
+      }
+    }
+
+    .custom-pulse {
+      animation: customPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes emergencyBlink {
+
+      0%,
+      100% {
+        background-color: #dc2626;
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+        transform: scaleX(1);
+      }
+
+      50% {
+        background-color: #ef4444;
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.8);
+        transform: scaleX(1.05);
+      }
+    }
+
+    .emergency-blink {
+      animation: emergencyBlink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(251, 146, 60, 0.4), 0 0 30px rgba(245, 158, 11, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 40px rgba(251, 146, 60, 0.8), 0 0 60px rgba(245, 158, 11, 0.6), 0 0 80px rgba(239, 68, 68, 0.4);
+      }
+    }
+
+    .emergency-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes gentleShake {
+
+      0%,
+      100% {
+        transform: translateX(0) scale(1);
+      }
+
+      10% {
+        transform: translateX(-2px) scale(1.01);
+      }
+
+      20% {
+        transform: translateX(2px) scale(1.01);
+      }
+
+      30% {
+        transform: translateX(-1px) scale(1.01);
+      }
+
+      40% {
+        transform: translateX(1px) scale(1.01);
+      }
+
+      50% {
+        transform: translateX(0) scale(1.01);
+      }
+    }
+
+    .emergency-shake {
+      animation: gentleShake 3s ease-in-out infinite;
+    }
+
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .glassmorphism-dark {
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .hover-tilt {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-tilt:hover {
+      transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .hover-scale {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-scale:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .parallax-bg {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .gradient-overlay {
+      background: linear-gradient(135deg, rgba(94, 137, 134, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+    }
+  </style>
+
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+  <div class="relative flex size-full min-h-screen flex-col overflow-x-hidden">
+    <div class="flex h-full grow flex-col">
+      <!-- Navigation Container - Will be populated by navbar-loader.js -->
+      <div id="navbar-container"></div>
+      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 w-full">
+        <div class="space-y-12">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 animate-fadeInUp">
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-5xl text-red-600 animate-pulse-slow">local_hospital</span>
+              <h1 class="text-5xl font-display font-extrabold text-black mb-0">Safety &amp; Emergency</h1>
+            </div>
+            <button
+              class="btn-emergency text-white font-bold py-5 px-10 rounded-full flex items-center gap-4 shadow-2xl relative overflow-hidden hover-lift">
+              <span class="material-symbols-outlined text-4xl">sos</span>
+              <div class="flex flex-col items-start">
+                <span class="text-xl font-black">EMERGENCY</span>
+                <span class="text-sm opacity-90">Share Location & Alert</span>
+              </div>
+            </button>
+          </div>
+          <!-- Live Weather/Alert Widget -->
+          <section class="mb-8 animate-fadeInUp">
+            <div class="glass-effect rounded-2xl p-6 hover-lift">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-3xl text-blue-600 animate-pulse-slow">cloud</span>
+                  <h3 class="text-xl font-display font-bold">Live Weather & Alerts</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span class="text-sm text-green-600 font-medium">Live</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">🌧️</span>
+                    <div>
+                      <p class="font-semibold text-blue-800">Rain </p>
+                      <p id="rainText" class="text-sm text-blue-600"></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-4 border border-yellow-200">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">🌊</span>
+                    <div>
+                      <p class="font-semibold text-yellow-800">Humidity</p>
+                      <p id="humidText" class="text-sm text-yellow-600"></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">🌡️</span>
+                    <div>
+                      <p class="font-semibold text-orange-800">Heat Advisory</p>
+                      <p id="tempText" class="text-sm text-orange-600"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <div class="flex items-center gap-3 mb-6">
+              <span class="material-symbols-outlined text-4xl text-blue-600 animate-pulse-slow">contact_phone</span>
+              <h2 class="text-3xl font-display font-bold text-gradient">Emergency Contacts</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="glass-effect p-6 rounded-xl flex items-center justify-between hover-lift">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-color)] text-[var(--primary-color)]">
+                    <span class="material-symbols-outlined">call</span>
+                  </div>
+                  <div>
+                    <p class="font-semibold">Emergency Services</p>
+                    <p class="text-sm text-[var(--text-secondary)]">Immediate assistance</p>
+                  </div>
+                </div>
+                <button class="btn-primary text-white py-2 px-5 rounded-full font-semibold">Call</button>
+              </div>
+              <div class="glass-effect p-6 rounded-xl flex items-center justify-between hover-lift">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-color)] text-[var(--primary-color)]">
+                    <span class="material-symbols-outlined">local_police</span>
+                  </div>
+                  <div>
+                    <p class="font-semibold">Local Police</p>
+                    <p class="text-sm text-[var(--text-secondary)]">Non-urgent issues</p>
+                  </div>
+                </div>
+                <button class="btn-primary text-white py-2 px-5 rounded-full font-semibold">Call</button>
+              </div>
+              <div class="glass-effect p-6 rounded-xl flex items-center justify-between hover-lift">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-color)] text-[var(--primary-color)]">
+                    <span class="material-symbols-outlined">health_and_safety</span>
+                  </div>
+                  <div>
+                    <p class="font-semibold">Health Services</p>
+                    <p class="text-sm text-[var(--text-secondary)]">Medical assistance</p>
+                  </div>
+                </div>
+                <button class="btn-primary text-white py-2 px-5 rounded-full font-semibold">Call</button>
+              </div>
+              <div class="glass-effect p-6 rounded-xl flex items-center justify-between hover-lift">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-color)] text-[var(--primary-color)]">
+                    <span class="material-symbols-outlined">support_agent</span>
+                  </div>
+                  <div>
+                    <p class="font-semibold">Tourist Helpline</p>
+                    <p class="text-sm text-[var(--text-secondary)]">Assistance for tourists</p>
+                  </div>
+                </div>
+                <button class="btn-primary text-white py-2 px-5 rounded-full font-semibold">Call</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Interactive Map Section -->
+          <section>
+            <div class="flex items-center gap-3 mb-6">
+              <span class="material-symbols-outlined text-4xl text-green-600 animate-pulse-slow">map</span>
+              <h2 class="text-3xl font-display font-bold text-gradient">Emergency Services Map</h2>
+            </div>
+            <div class="glass-effect rounded-2xl p-6 hover-lift">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <h3 class="text-xl font-bold mb-4">Nearest Emergency Services</h3>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                      <div class="w-4 h-4 bg-red-500 rounded-full"></div>
+                      <div>
+                        <p id="closestHospitalName" class="font-semibold text-red-800">Goa Medical College</p>
+                        <p id="hospitalDistance" class="text-sm text-red-600">2.3 km • 5 min drive</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+                      <div>
+                        <p id="closestPoliceStationName" class="font-semibold text-blue-800">Panaji Police Station</p>
+                        <p id="policeDistance" class="text-sm text-blue-600">1.8 km • 4 min drive</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                      <div>
+                        <p id="closestFireStationName" class="font-semibold text-green-800">Fire Station</p>
+                        <p id="fireDistance" class="text-sm text-green-600">3.1 km • 6 min drive</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="relative flex flex-col">
+                  <div id="map" class="w-full h-96 rounded-lg shadow-lg"></div>
+
+                  <!-- Map markers overlay -->
+                  <div class="absolute top-4 left-4 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                  <div class="absolute top-16 right-8 w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
+                  <div class="absolute bottom-20 left-12 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+                  <div class="absolute bottom-8 right-16 w-4 h-4 bg-yellow-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <div class="flex items-center gap-3 mb-6">
+              <span class="material-symbols-outlined text-4xl text-purple-600 animate-pulse-slow">security</span>
+              <h2 class="text-3xl font-display font-bold text-gradient">Safety Features</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="glass-effect rounded-2xl p-6 hover-lift">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white">
+                    <span class="material-symbols-outlined text-2xl">notifications_active</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-red-800">Live Alerts</h3>
+                </div>
+                <p class="text-red-700 mb-4">Real-time emergency notifications and weather alerts for your current
+                  location.</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-red-600 font-medium">Status: Active</span>
+                  <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+
+              <div class="glass-effect rounded-2xl p-6 hover-lift">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white">
+                    <span class="material-symbols-outlined text-2xl">local_hospital</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-blue-800">Nearest Hospital</h3>
+                </div>
+                <p class="text-blue-700 mb-4">Find the closest medical facilities with contact details and directions.
+                </p>
+                <button class="btn-primary text-white py-2 px-4 rounded-full text-sm font-semibold">
+                  Find Now
+                </button>
+              </div>
+
+              <div class="glass-effect rounded-2xl p-6 hover-lift">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-white">
+                    <span class="material-symbols-outlined text-2xl">location_on</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-green-800">Location Sharing</h3>
+                </div>
+                <p class="text-green-700 mb-4">Share your real-time location with emergency contacts and family.</p>
+                <button class="btn-primary text-white py-2 px-4 rounded-full text-sm font-semibold">
+                  Share Location
+                </button>
+              </div>
+
+              <div class="glass-effect rounded-2xl p-6 hover-lift">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500 text-white">
+                    <span class="material-symbols-outlined text-2xl">local_police</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-yellow-800">Police Stations</h3>
+                </div>
+                <p class="text-yellow-700 mb-4">Locate nearby police stations and emergency services in your area.</p>
+                <button class="btn-primary text-white py-2 px-4 rounded-full text-sm font-semibold">
+                  Find Police
+                </button>
+              </div>
+
+              <div class="glass-effect rounded-2xl p-6 hover-lift">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500 text-white">
+                    <span class="material-symbols-outlined text-2xl">emergency_share</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-purple-800">Emergency Kit</h3>
+                </div>
+                <p class="text-purple-700 mb-4">Access emergency supplies checklist and first aid information.</p>
+                <button class="btn-primary text-white py-2 px-4 rounded-full text-sm font-semibold">
+                  View Kit
+                </button>
+              </div>
+
+              <div class="glass-effect rounded-2xl p-6 hover-lift">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-500 text-white">
+                    <span class="material-symbols-outlined text-2xl">translate</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-indigo-800">Emergency Phrases</h3>
+                </div>
+                <p class="text-indigo-700 mb-4">Essential emergency phrases in local languages for quick communication.
+                </p>
+                <button class="btn-primary text-white py-2 px-4 rounded-full text-sm font-semibold">
+                  Learn Phrases
+                </button>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div class="flex items-center gap-3 mb-6">
+              <span class="material-symbols-outlined text-4xl text-green-600 animate-pulse-slow">lightbulb</span>
+              <h2 class="text-3xl font-display font-bold text-gradient">Safety Tips</h2>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-center gap-4 rounded-lg glass-effect p-4 hover-lift">
+                <span class="material-symbols-outlined text-gray-600">checklist</span>
+                <p class="text-base text-slate-600">Keep emergency contacts handy and saved on your phone.</p>
+              </div>
+              <div class="flex items-center gap-4 rounded-lg glass-effect p-4 hover-lift">
+                <span class="material-symbols-outlined text-gray-600">newspaper</span>
+                <p class="text-base text-slate-600">Stay updated on local news and weather forecasts.</p>
+              </div>
+              <div class="flex items-center gap-4 rounded-lg glass-effect p-4 hover-lift">
+                <span class="material-symbols-outlined text-gray-600">share_location</span>
+                <p class="text-base text-slate-600">Share your itinerary with someone you trust.</p>
+              </div>
+              <div class="flex items-center gap-4 rounded-lg glass-effect p-4 hover-lift">
+                <span class="material-symbols-outlined text-gray-600">explore_off</span>
+                <p class="text-base text-slate-600">Avoid high-risk areas, especially at night or when alone.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Modern JavaScript functionality
+    document.addEventListener( 'DOMContentLoaded', function () {
+      // Intersection Observer for animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver( ( entries ) => {
+        entries.forEach( entry => {
+          if ( entry.isIntersecting ) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        } );
+      }, observerOptions );
+
+      // Observe elements for animation
+      document.querySelectorAll( '.animate-fadeInUp, .animate-slideInLeft, .animate-slideInRight' ).forEach( el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        observer.observe( el );
+      } );
+
+      // Emergency button functionality
+      const emergencyBtn = document.querySelector( '.btn-emergency' );
+      if ( emergencyBtn ) {
+        emergencyBtn.addEventListener( 'click', function () {
+          // Add emergency animation
+          this.style.animation = 'pulse 0.5s ease-in-out 3';
+
+          // Simulate emergency alert
+          setTimeout( () => {
+            alert( '🚨 Emergency alert sent! Your location has been shared with emergency contacts.' );
+          }, 1000 );
+        } );
+      }
+
+      // Button click animations
+      document.querySelectorAll( 'button' ).forEach( button => {
+        button.addEventListener( 'click', function ( e ) {
+          const ripple = document.createElement( 'span' );
+          const rect = this.getBoundingClientRect();
+          const size = Math.max( rect.width, rect.height );
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+
+          ripple.style.cssText = `
+                position: absolute;
+                width: ${ size }px;
+                height: ${ size }px;
+                left: ${ x }px;
+                top: ${ y }px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            `;
+
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
+          this.appendChild( ripple );
+
+          setTimeout( () => {
+            ripple.remove();
+          }, 600 );
+        } );
+      } );
+
+      // Add ripple animation
+      const style = document.createElement( 'style' );
+      style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+      document.head.appendChild( style );
+
+      // Smooth scrolling for navigation links
+      document.querySelectorAll( 'a[href^="#"]' ).forEach( anchor => {
+        anchor.addEventListener( 'click', function ( e ) {
+          e.preventDefault();
+          const target = document.querySelector( this.getAttribute( 'href' ) );
+          if ( target ) {
+            target.scrollIntoView( {
+              behavior: 'smooth',
+              block: 'start'
+            } );
+          }
+        } );
+      } );
+
+      // Add scroll effect to navigation
+      window.addEventListener( 'scroll', function () {
+        const nav = document.querySelector( 'nav' );
+        if ( window.scrollY > 100 ) {
+          nav.style.background = 'rgba(255, 255, 255, 0.98)';
+        } else {
+          nav.style.background = 'rgba(255, 255, 255, 0.95)';
+        }
+      } );
+
+      // Interactive card hover effects (excluding navbar completely)
+      document.querySelectorAll( '.glass-effect' ).forEach( card => {
+        // Skip if the element is inside nav or is the nav itself
+        if ( card.closest( 'nav' ) || card.tagName === 'NAV' ) {
+          return;
+        }
+
+        card.addEventListener( 'mouseenter', function () {
+          this.style.transform = 'translateY(-8px) rotateX(5deg)';
+          this.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+        } );
+
+        card.addEventListener( 'mouseleave', function () {
+          this.style.transform = 'translateY(0) rotateX(0deg)';
+          this.style.boxShadow = '';
+        } );
+      } );
+
+      console.log( '🚀 Modern SOS page loaded successfully!' );
+    } );
+  </script>
+  <script>
+    const map = L.map( 'map' ).setView( [ 0, 0 ], 13 );
+
+    L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    } ).addTo( map );
+
+    function createEmojiIcon( emoji ) {
+      return L.divIcon( {
+        className: "emoji-icon",
+        html: emoji,
+        iconSize: [ 25, 25 ],
+        iconAnchor: [ 12, 12 ],
+        popupAnchor: [ 0, -10 ]
+      } );
+    }
+
+    function getDistance( lat1, lon1, lat2, lon2 ) {
+      const R = 6371e3;
+      const φ1 = lat1 * Math.PI / 180;
+      const φ2 = lat2 * Math.PI / 180;
+      const Δφ = ( lat2 - lat1 ) * Math.PI / 180;
+      const Δλ = ( lon2 - lon1 ) * Math.PI / 180;
+      const a = Math.sin( Δφ / 2 ) * Math.sin( Δφ / 2 ) +
+        Math.cos( φ1 ) * Math.cos( φ2 ) *
+        Math.sin( Δλ / 2 ) * Math.sin( Δλ / 2 );
+      const c = 2 * Math.atan2( Math.sqrt( a ), Math.sqrt( 1 - a ) );
+      return R * c;
+    }
+
+    async function searchNominatim( query, lat, lon ) {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${ encodeURIComponent( query ) }&limit=5&viewbox=${ lon - 0.05 },${ lat + 0.05 },${ lon + 0.05 },${ lat - 0.05 }&bounded=1`;
+      const res = await fetch( url, { headers: { "User-Agent": "MyApp/1.0" } } );
+      return await res.json();
+    }
+
+    const categories = {
+      hospital: { query: "hospital", emoji: "🏥" },
+      fire_station: { query: "fire station", emoji: "🚒" },
+      police: { query: "police station", emoji: "👮" },
+    };
+
+    const closest = {
+      hospital: null,
+      fire_station: null,
+      police: null,
+      tourist_police: null
+    };
+
+    if ( navigator.geolocation ) {
+      navigator.geolocation.getCurrentPosition( async ( pos ) => {
+        const { latitude, longitude } = pos.coords;
+
+        map.setView( [ latitude, longitude ], 15 );
+        L.marker( [ latitude, longitude ], { icon: createEmojiIcon( "📍" ) } )
+          .addTo( map )
+          .bindPopup( "You are here" );
+
+        // Search one by one
+        for ( const [ key, { query, emoji } ] of Object.entries( categories ) ) {
+          const results = await searchNominatim( query, latitude, longitude );
+
+          if ( results.length > 0 ) {
+            // Pick closest result
+            let min = null;
+            results.forEach( r => {
+              const dist = getDistance( latitude, longitude, r.lat, r.lon );
+              if ( !min || dist < min.distance ) {
+                min = { ...r, distance: dist };
+              }
+              // add all candidates to map
+              L.marker( [ r.lat, r.lon ], { icon: createEmojiIcon( emoji ) } )
+                .addTo( map )
+                .bindPopup( `<b>${ r.display_name }</b><br>Type: ${ query }<br>Distance: ${ Math.round( dist ) }m` );
+            } );
+
+            closest[ key ] = min;
+          }
+        }
+
+        console.log( "Closest per type:", closest );
+        const closestHospitalName = document.getElementById( 'closestHospitalName' )
+        const closestPoliceStationName = document.getElementById( 'closestPoliceStationName' )
+        const closestFireStationName = document.getElementById( 'closestFireStationName' )
+        closestHospitalName.innerText = closest[ 'hospital' ][ 'display_name' ]
+        closestFireStationName.innerText = closest[ 'fire_station' ][ 'display_name' ]
+        closestPoliceStationName.innerText = closest[ 'police' ][ 'display_name' ]
+
+        const fireDistance = document.getElementById( 'fireDistance' )
+        const hospitalDistance = document.getElementById( 'hospitalDistance' )
+        const policeDistance = document.getElementById( 'policeDistance' )
+
+        function formatDistanceAndTime( d ) {
+          if ( !d ) return "❌ Not found";
+          const dist = d.distance;
+          const distanceText = dist >= 1000 ? ( dist / 1000 ).toFixed( 1 ) + " km" : Math.round( dist ) + " m";
+          const minutes = Math.round( ( dist / 11.1 ) / 60 ); // 40 km/h
+          const timeText = minutes < 1 ? "<1 min drive" : `${ minutes } min drive`;
+          return `${ distanceText } • ${ timeText }`;
+        }
+
+        // One-liners:
+        document.getElementById( 'fireDistance' ).innerText = formatDistanceAndTime( closest[ 'fire_station' ] );
+        document.getElementById( 'hospitalDistance' ).innerText = formatDistanceAndTime( closest[ 'hospital' ] );
+        document.getElementById( 'policeDistance' ).innerText = formatDistanceAndTime( closest[ 'police' ] );
+
+      } );
+
+
+    }
+  </script>
+  <script>
+    async function fetchWeather( ) {
+      navigator.geolocation.getCurrentPosition( async ( pos ) => {
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${ pos.coords.latitude }&longitude=${ pos.coords.longitude }&current=temperature_2m,rain,precipitation,relative_humidity_2m`;
+          const res = await fetch( url );
+          const data = await res.json();
+
+          const { temperature_2m, relative_humidity_2m, precipitation } = data.current;
+
+          const temperatureStr = `🌡️ Temperature: ${ temperature_2m } °C`;
+          const humidityStr = `💧 Humidity: ${ relative_humidity_2m }%`;
+          const precipitationStr = `🌧️ Precipitation: ${ precipitation } mm`;
+          document.getElementById('rainText').innerText=precipitationStr
+          document.getElementById('tempText').innerText=temperatureStr
+          document.getElementById('humidText').innerText=humidityStr
+
+
+          return { temperatureStr, humidityStr, precipitationStr };
+        } catch ( err ) {
+          console.error( "Failed to fetch weather:", err );
+        }
+      } )
+    
+    }
+
+    fetchWeather(  );
+
+  </script>
+</body>
+
+</html>

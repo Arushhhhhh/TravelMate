@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <title>TravelMate - Discover Your Next Adventure</title>
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar-fixes.css') }}">
+  <!-- Navbar Loader Script -->
+  <script src="{{ url_for('static', filename='js/navbar-loader.js') }}"></script>
+  <!-- Booking functionality -->
+  <script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+  <script>
+    // Search functionality
+    function performSearch() {
+      const searchTerm = document.getElementById('searchInput').value.trim();
+      if (searchTerm) {
+        // Redirect to recomendations page with search query
+        window.location.href = `/recomendations?q=${encodeURIComponent(searchTerm)}`;
+      } else {
+        alert('Please enter a search term');
+      }
+    }
+
+    // Handle Enter key press in search input
+    function handleSearchKeyPress(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        performSearch();
+      }
+    }
+
+    // Quick search function for popular search buttons
+    function searchFor(category) {
+      window.location.href = `/recomendations?q=${encodeURIComponent(category)}`;
+    }
+  </script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+  <!-- Navigation Container - Will be populated by navbar-loader.js -->
+  <div id="navbar-container"></div>
+
+  <!-- Search Section -->
+  
+
+  <!-- Planning Section -->
+  <section class="py-32 px-4 sm:px-6 lg:px-8 bgimg">
+    <section class="py-16 px-4 sm:px-6 lg:px-8 ">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="animate-fadeInUp">
+          
+          
+          <!-- Search Bar -->
+          <div class="relative max-w-2xl mx-auto">
+            <div class="glass-effect rounded-full p-2 shadow-lg">
+              <div class="flex items-center">
+                <div class="flex-1 relative">
+                  <div class="absolute left-6 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                  </div>
+                  <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search destinations, activities, or experiences..."
+                    class="w-full pl-14 pr-6 py-4 text-lg bg-transparent border-none outline-none text-slate-700 placeholder-slate-500"
+                    onkeypress="handleSearchKeyPress(event)"
+                  />
+                </div>
+                <button 
+                  onclick="performSearch()" 
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover-lift ml-2"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          
+            
+        </div>
+      </div>
+    </section>
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-8 animate-fadeInUp">
+        <h2 class="text-4xl font-display font-bold">Plan Your Perfect Journey</h2>
+      </div>
+
+      <div class="glass-effect rounded-3xl p-8 sm:p-12 mb-4 hover-lift">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Bookings -->
+          <div
+            class="interactive-card bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center cursor-pointer"
+            onclick="toggleBookingOptions()">
+            <div
+              class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Bookings</h3>
+            <p class="text-slate-600">Flight, Train & Cab reservations</p>
+          </div>
+
+          <!-- Packages -->
+          <div
+            class="interactive-card bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center cursor-pointer"
+            onclick="showPackagesBookingForm()">
+            <div
+              class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M239.5,148.11l-32-104A16,16,0,0,0,192.4,32H63.6A16,16,0,0,0,48.5,44.11l-32,104A16,16,0,0,0,32,176v32a16,16,0,0,0,16,16H56a16,16,0,0,0,16-16V200H184v8a16,16,0,0,0,16,16h8a16,16,0,0,0,16-16V176a16,16,0,0,0-15.5-19.89ZM67.24,48H188.76l24,78H43.24ZM48,160H208v16H48Z">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Packages</h3>
+            <p class="text-slate-600">Complete travel packages</p>
+          </div>
+
+          <!-- Tourist Guide -->
+          <div
+            class="interactive-card bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center cursor-pointer"
+            onclick="showTouristGuideBookingForm()">
+            <div
+              class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Tourist Guide</h3>
+            <p class="text-slate-600">Local guides & tours</p>
+          </div>
+
+          <!-- Hotel -->
+          <div
+            class="interactive-card bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 text-center cursor-pointer"
+            onclick="showHotelBookingForm()">
+            <div
+              class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M216,64V48a16,16,0,0,0-16-16H56A16,16,0,0,0,40,48V176H56V48H200V64h16Zm32,56V88a16,16,0,0,0-16-16H88a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16H232a16,16,0,0,0,16-16V144h-16v64H88V88H232v32Z">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Hotel</h3>
+            <p class="text-slate-600">Accommodation booking</p>
+          </div>
+        </div>
+
+        <!-- Booking Options (Hidden by default) -->
+        <div id="bookingOptions" class="hidden mt-8 p-6 bg-white rounded-2xl border">
+          <h4 class="text-2xl font-semibold mb-6 text-center">Choose Your Transportation</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Flight Booking -->
+            <div class="border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              onclick="showBookingForm('flight')">
+              <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-3 bg-blue-100 rounded-full flex items-center justify-center">
+                  ✈
+                </div>
+                <h5 class="font-semibold mb-2">Flight Booking</h5>
+                <p class="text-sm text-slate-600">Book domestic and international flights</p>
+              </div>
+            </div>
+
+            <!-- Train Booking -->
+            <div class="border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              onclick="showBookingForm('train')">
+              <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-3 bg-green-100 rounded-full flex items-center justify-center">
+                  🚂
+                </div>
+                <h5 class="font-semibold mb-2">Train Booking</h5>
+                <p class="text-sm text-slate-600">Reserve train tickets nationwide</p>
+              </div>
+            </div>
+
+            <!-- Cab Booking -->
+            <div class="border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer"
+              onclick="showBookingForm('cab')">
+              <div class="text-center">
+                <div class="w-12 h-12 mx-auto mb-3 bg-orange-100 rounded-full flex items-center justify-center">
+                  🚕
+                </div>
+                <h5 class="font-semibold mb-2">Cab Booking</h5>
+                <p class="text-sm text-slate-600">Book reliable cab rides</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking Form (Hidden by default) -->
+        <div id="bookingForm" class="hidden mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl">
+          <h4 id="bookingTitle" class="text-2xl font-semibold mb-6 text-center">✈ Book Your Flight</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">From</label>
+              <input type="text" id="bookingFrom" placeholder="Departure city"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">To</label>
+              <input type="text" id="bookingTo" placeholder="Destination city"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Departure Date</label>
+              <input type="date" id="bookingDeparture"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Passengers</label>
+              <div class="relative">
+                <select id="bookingPassengers" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none pr-10">
+                  <option>1 Passenger</option>
+                  <option>2 Passengers</option>
+                  <option>3 Passengers</option>
+                  <option>4 Passengers</option>
+                  <option>5 Passengers</option>
+                  <option>6 Passengers</option>
+                </select>
+                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-6">
+            <button onclick="searchTransportation()" class="btn-primary px-8 py-3 rounded-full text-white font-semibold">
+              Search & Book Now
+            </button>
+          </div>
+        </div>
+
+
+        <!-- Hotel Booking Form (Hidden by default) -->
+        <div id="hotelBookingForm" class="hidden mt-8 p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl">
+          <h4 class="text-2xl font-semibold mb-6 text-center">🏨 Book Your Hotel</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Destination</label>
+              <div class="relative">
+                <input type="text" id="hotelDestination" placeholder="City, Property Name or Location"
+                  class="w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Check-In Date</label>
+              <div class="relative">
+                <input type="date" id="hotelCheckin"
+                  class="w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Check-Out Date</label>
+              <div class="relative">
+                <input type="date" id="hotelCheckout"
+                  class="w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Rooms & Guests</label>
+              <div class="relative">
+                <select
+                  class="w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none">
+                  <option>1 Room, 2 Guests</option>
+                  <option>1 Room, 1 Guest</option>
+                  <option>1 Room, 3 Guests</option>
+                  <option>1 Room, 4 Guests</option>
+                  <option>2 Rooms, 4 Guests</option>
+                  <option>2 Rooms, 6 Guests</option>
+                  <option>3 Rooms, 6 Guests</option>
+                </select>
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z">
+                  </path>
+                </svg>
+                <svg
+                  class="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="text-center mt-6">
+            <button onclick="searchHotels()" class="btn-primary px-8 py-3 rounded-full text-white font-semibold">
+              Search Hotels
+            </button>
+          </div>
+        </div>
+
+        <!-- Packages Booking Form (Hidden by default) -->
+        <div id="packagesBookingForm" class="hidden mt-8 p-6 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl">
+          <h4 class="text-2xl font-semibold mb-6 text-center">🎒 Book Your Package</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">From</label>
+              <input type="text" placeholder="Departure city"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">To</label>
+              <input type="text" placeholder="Destination city"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Departure Date</label>
+              <input type="date"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Passengers</label>
+              <select class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <option>1 Passenger</option>
+                <option>2 Passengers</option>
+                <option>3 Passengers</option>
+                <option>4 Passengers</option>
+                <option>5 Passengers</option>
+                <option>6 Passengers</option>
+                <option>7 Passengers</option>
+                <option>8+ Passengers</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-center mt-6">
+            <button onclick="searchPackages()" class="btn-primary px-8 py-3 rounded-full text-white font-semibold">
+              Search & Book Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Tourist Guide Booking Form (Hidden by default) -->
+        <div id="touristGuideBookingForm"
+          class="hidden mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl">
+          <h4 class="text-2xl font-semibold mb-6 text-center">🗺 Book Your Tourist Guide</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">From Date</label>
+              <input type="date"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">To Date</label>
+              <input type="date"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Destination / Place</label>
+              <input type="text" placeholder="Where do you need a guide?"
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Number of Persons</label>
+              <select class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                <option>1 Person</option>
+                <option>2 Persons</option>
+                <option>3 Persons</option>
+                <option>4 Persons</option>
+                <option>5 Persons</option>
+                <option>6 Persons</option>
+                <option>7 Persons</option>
+                <option>8 Persons</option>
+                <option>9 Persons</option>
+                <option>10 Persons</option>
+                <option>10+ Persons</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-center mt-6">
+            <button onclick="window.location.href='tourist_guide';"
+              class="btn-primary px-8 py-3 rounded-full text-white font-semibold">
+              Search & Book Now
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recommended Places -->
+  <section id="planning" class="pt-4 pb-12 px-4 sm:px-6 lg:px-8 bgimg">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12 animate-fadeInUp">
+        <h2 class="text-4xl font-display font-bold">Recommended Places to Visit</h2>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Lotus Temple -->
+        <div class="group interactive-card glass-effect rounded-3xl overflow-hidden hover-lift">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+            <img src="../static/images/lotustemple2.jpg" alt="Lotus Temple, Delhi"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute bottom-4 left-4 z-20 text-white">
+              <h3 class="text-xl font-semibold mb-1">Lotus Temple</h3>
+              <p class="text-sm opacity-90">🪷 New Delhi, India</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 mb-4">A magnificent Bahá'í House of Worship renowned for its stunning lotus-shaped architecture. This serene temple welcomes people of all faiths and offers peaceful meditation spaces surrounded by beautiful gardens.</p>
+            <button class="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+              Explore More →
+            </button>
+          </div>
+        </div>
+
+        <!-- Taj Mahal -->
+        <div class="group interactive-card glass-effect rounded-3xl overflow-hidden hover-lift">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+            <img src="../static/images/taj-mahal-agra-india-TAJ0217-9eab8f20d11d4391901867ed1ce222b8.jpg" alt="Taj Mahal, Agra"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute bottom-4 left-4 z-20 text-white">
+              <h3 class="text-xl font-semibold mb-1">Taj Mahal</h3>
+              <p class="text-sm opacity-90">🏛 Agra, India</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 mb-4">The iconic white marble mausoleum built by Emperor Shah Jahan as a symbol of eternal love. This UNESCO World Heritage Site is a masterpiece of Mughal architecture and one of the Seven Wonders of the World.</p>
+            <button class="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+              Explore More →
+            </button>
+          </div>
+        </div>
+
+        <!-- Hawa Mahal -->
+        <div class="group interactive-card glass-effect rounded-3xl overflow-hidden hover-lift">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+            <img src="./static/images/pexels-ankur-bagai-6440428.webp" alt="Hawa Mahal, Jaipur"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute bottom-4 left-4 z-20 text-white">
+              <h3 class="text-xl font-semibold mb-1">Hawa Mahal</h3>
+              <p class="text-sm opacity-90">🏰 Jaipur, India</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 mb-4">The stunning "Palace of Winds" in Jaipur, famous for its unique five-story facade with 953 small windows. This architectural marvel was built for royal ladies to observe street festivals while remaining unseen.</p>
+            <button class="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+              Explore More →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-12">
+        <button class="glass-effect px-8 py-4 rounded-full text-slate-700 font-semibold hover-lift">
+          View All Destinations 🌍
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tourist Reviews -->
+  <section class="py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 border-2 border-slate-200">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 animate-fadeInUp">
+        <h2 class="text-4xl font-display font-bold mb-4">Tourist Reviews</h2>
+        <p class="text-xl text-slate-600">Real experiences from travelers who used TravelMate</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="glass-effect rounded-2xl p-8 hover-lift">
+          <div class="flex items-center mb-6">
+            <img
+              src="../static/images/premium_photo-1722682239201-21c8173e776b.avif"
+              alt="Sarah" class="w-12 h-12 rounded-full object-cover">
+            <div class="ml-4">
+              <h4 class="font-semibold">Karan Ahlawat</h4>
+              <p class="text-sm text-slate-600">Digital Nomad</p>
+            </div>
+          </div>
+          <div class="flex mb-4">
+            ⭐⭐⭐⭐⭐
+          </div>
+          <p class="text-slate-600 italic">"TravelMate made my entire 3-week Southeast Asia trip planning effortless.
+            Every
+            recommendation was perfect, and I discovered places I never would have found on my own!"</p>
+        </div>
+
+        <div class="glass-effect rounded-2xl p-8 hover-lift">
+          <div class="flex items-center mb-6">
+            <img
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+              alt="Marcus" class="w-12 h-12 rounded-full object-cover">
+            <div class="ml-4">
+              <h4 class="font-semibold">Marcus Johnson</h4>
+              <p class="text-sm text-slate-600">Adventure Photographer</p>
+            </div>
+          </div>
+          <div class="flex mb-4">
+            ⭐⭐⭐⭐⭐
+          </div>
+          <p class="text-slate-600 italic">"The local insights feature is incredible. I got access to hidden spots that
+            even locals didn't know about. My photography has never been better!"</p>
+        </div>
+
+        <div class="glass-effect rounded-2xl p-8 hover-lift">
+          <div class="flex items-center mb-6">
+            <img
+              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
+              alt="Emma" class="w-12 h-12 rounded-full object-cover">
+            <div class="ml-4">
+              <h4 class="font-semibold">Emma Rodriguez</h4>
+              <p class="text-sm text-slate-600">Family Traveler</p>
+            </div>
+          </div>
+          <div class="flex mb-4">
+            ⭐⭐⭐⭐⭐
+          </div>
+          <p class="text-slate-600 italic">"Traveling with kids is challenging, but TravelMate made it seamless. The
+            booking system and recommendations were perfect for our European adventure."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div class="absolute inset-0 gradient-bg opacity-10"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+      <div class="animate-fadeInUp">
+        <h2 class="text-4xl sm:text-5xl font-display font-bold mb-6">
+          Ready to Start Your Next
+          <span class="text-gradient">Adventure?</span>
+        </h2>
+        <p class="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+          Join thousands of travelers who trust TravelMate to create unforgettable experiences.
+          Your perfect journey awaits.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="btn-primary px-10 py-4 rounded-full text-white font-semibold text-lg">
+            Start Planning Today
+          </button>
+          <button class="glass-effect px-10 py-4 rounded-full text-slate-700 font-semibold text-lg hover-lift">
+            Learn More
+          </button>
+        </div>
+      </div>
+
+      <!-- Trust Indicators -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60">
+        <div class="text-center">
+          <div class="text-2xl mb-2">🔒</div>
+          <div class="text-sm text-slate-600">Secure & Private</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-2">⚡</div>
+          <div class="text-sm text-slate-600">Instant Results</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-2">🌍</div>
+          <div class="text-sm text-slate-600">Global Coverage</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-2">💝</div>
+          <div class="text-sm text-slate-600">Free to Try</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center space-x-1">
+            <div class="relative">
+              <div class="w-8 h-10 rounded-full overflow-hidden">
+                <img style="height: inherit; width: auto" src="../static/images/Logo.png">
+              </div>
+            </div>
+            <h1 class="text-2xl font-display font-bold text-gradient">TravelMate</h1>
+          </div>
+          <p class="text-slate-400 mb-6 max-w-md">
+            Your ultimate travel companion for seamless bookings, expert guides, and unforgettable adventures.
+            Available on all platforms with 24/7 support.
+          </p>
+          <div class="flex space-x-4 mb-6">
+            <a href="#"
+              class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors">
+              <span class="text-blue-400">f</span>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors">
+              <span class="text-blue-400">t</span>
+            </a>
+            <a href="#"
+              class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors">
+              <span class="text-blue-400">in</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Services</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li>Flight Booking</li>
+            <li>Hotel Reservations</li>
+            <li>Train & Cab Tickets</li>
+            <li>Tourist Guides</li>
+            <li>Travel Packages</li>
+            <li>Local Experiences</li>
+          </ul>
+        </div>
+
+        <!-- Contact & Support -->
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Contact & Support</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li>support@TravelMate.com</li>
+            <li>+1-800-TravelMate</li>
+            <li>Live Chat 24/7</li>
+            <li>Help Center</li>
+            <li>Travel Insurance</li>
+            <li>Emergency Support</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Footer -->
+      <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div class="text-slate-400 text-sm">
+          &copy; 2024 TravelMate. All rights reserved. | Privacy Policy | Terms of Service
+        </div>
+        <div class="text-slate-400 text-sm mt-4 md:mt-0">
+          Made with care for travelers worldwide
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript for Interactive Features -->
+  <script>
+    function toggleBookingOptions() {
+      const bookingOptions = document.getElementById( 'bookingOptions' );
+      const bookingForm = document.getElementById( 'bookingForm' );
+      const hotelBookingForm = document.getElementById( 'hotelBookingForm' );
+      const packagesBookingForm = document.getElementById( 'packagesBookingForm' );
+
+      if ( bookingOptions.classList.contains( 'hidden' ) ) {
+        bookingOptions.classList.remove( 'hidden' );
+        bookingForm.classList.add( 'hidden' );
+        hotelBookingForm.classList.add( 'hidden' );
+        packagesBookingForm.classList.add( 'hidden' );
+      } else {
+        bookingOptions.classList.add( 'hidden' );
+        bookingForm.classList.add( 'hidden' );
+        hotelBookingForm.classList.add( 'hidden' );
+        packagesBookingForm.classList.add( 'hidden' );
+      }
+    }
+
+    function showBookingForm( type ) {
+      const bookingForm = document.getElementById( 'bookingForm' );
+      const hotelBookingForm = document.getElementById( 'hotelBookingForm' );
+      const packagesBookingForm = document.getElementById( 'packagesBookingForm' );
+      const bookingTitle = document.getElementById( 'bookingTitle' );
+      const classSelect = document.getElementById( 'classSelect' );
+
+      hotelBookingForm.classList.add( 'hidden' );
+      packagesBookingForm.classList.add( 'hidden' );
+      bookingForm.classList.remove( 'hidden' );
+
+      switch ( type ) {
+        case 'flight':
+          bookingTitle.textContent = '✈ Book Your Flight';
+          classSelect.innerHTML = `
+            <option>Economy</option>
+            <option>Premium Economy</option>
+            <option>Business</option>
+            <option>First Class</option>
+          `;
+          break;
+        case 'train':
+          bookingTitle.textContent = '🚂 Book Your Train';
+          classSelect.innerHTML = `
+            <option>General</option>
+            <option>Sleeper</option>
+            <option>AC 3 Tier</option>
+            <option>AC 2 Tier</option>
+            <option>AC 1 Tier</option>
+          `;
+          break;
+        case 'cab':
+          bookingTitle.textContent = '🚕 Book Your Cab';
+          classSelect.innerHTML = `
+            <option>Economy</option>
+            <option>Comfort</option>
+            <option>Premium</option>
+            <option>Luxury</option>
+          `;
+          break;
+      }
+    }
+
+    function showHotelBookingForm() {
+      const bookingOptions = document.getElementById( 'bookingOptions' );
+      const bookingForm = document.getElementById( 'bookingForm' );
+      const hotelBookingForm = document.getElementById( 'hotelBookingForm' );
+      const packagesBookingForm = document.getElementById( 'packagesBookingForm' );
+      const touristGuideBookingForm = document.getElementById( 'touristGuideBookingForm' );
+
+      // Toggle hotel booking form
+      if ( hotelBookingForm.classList.contains( 'hidden' ) ) {
+        bookingOptions.classList.add( 'hidden' );
+        bookingForm.classList.add( 'hidden' );
+        packagesBookingForm.classList.add( 'hidden' );
+        touristGuideBookingForm.classList.add( 'hidden' );
+        hotelBookingForm.classList.remove( 'hidden' );
+      } else {
+        hotelBookingForm.classList.add( 'hidden' );
+      }
+    }
+
+    function showPackagesBookingForm() {
+      const bookingOptions = document.getElementById( 'bookingOptions' );
+      const bookingForm = document.getElementById( 'bookingForm' );
+      const hotelBookingForm = document.getElementById( 'hotelBookingForm' );
+      const packagesBookingForm = document.getElementById( 'packagesBookingForm' );
+      const touristGuideBookingForm = document.getElementById( 'touristGuideBookingForm' );
+
+      // Toggle packages booking form
+      if ( packagesBookingForm.classList.contains( 'hidden' ) ) {
+        bookingOptions.classList.add( 'hidden' );
+        bookingForm.classList.add( 'hidden' );
+        hotelBookingForm.classList.add( 'hidden' );
+        touristGuideBookingForm.classList.add( 'hidden' );
+        packagesBookingForm.classList.remove( 'hidden' );
+      } else {
+        packagesBookingForm.classList.add( 'hidden' );
+      }
+    }
+
+    function showTouristGuideBookingForm() {
+      const bookingOptions = document.getElementById( 'bookingOptions' );
+      const bookingForm = document.getElementById( 'bookingForm' );
+      const hotelBookingForm = document.getElementById( 'hotelBookingForm' );
+      const packagesBookingForm = document.getElementById( 'packagesBookingForm' );
+      const touristGuideBookingForm = document.getElementById( 'touristGuideBookingForm' );
+
+      // Toggle tourist guide booking form
+      if ( touristGuideBookingForm.classList.contains( 'hidden' ) ) {
+        bookingOptions.classList.add( 'hidden' );
+        bookingForm.classList.add( 'hidden' );
+        hotelBookingForm.classList.add( 'hidden' );
+        packagesBookingForm.classList.add( 'hidden' );
+        touristGuideBookingForm.classList.remove( 'hidden' );
+      } else {
+        touristGuideBookingForm.classList.add( 'hidden' );
+      }
+    }
+
+    function closeAllBookingForms() {
+      const bookingOptions = document.getElementById( 'bookingOptions' );
+      const bookingForm = document.getElementById( 'bookingForm' );
+      const hotelBookingForm = document.getElementById( 'hotelBookingForm' );
+      const packagesBookingForm = document.getElementById( 'packagesBookingForm' );
+      const touristGuideBookingForm = document.getElementById( 'touristGuideBookingForm' );
+
+      bookingOptions.classList.add( 'hidden' );
+      bookingForm.classList.add( 'hidden' );
+      hotelBookingForm.classList.add( 'hidden' );
+      packagesBookingForm.classList.add( 'hidden' );
+      touristGuideBookingForm.classList.add( 'hidden' );
+    }
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll( 'a[href^="#"]' ).forEach( anchor => {
+      anchor.addEventListener( 'click', function ( e ) {
+        e.preventDefault();
+        const target = document.querySelector( this.getAttribute( 'href' ) );
+        if ( target ) {
+          target.scrollIntoView( {
+            behavior: 'smooth',
+            block: 'start'
+          } );
+        }
+      } );
+    } );
+
+    // Add scroll effect to navigation
+    window.addEventListener( 'scroll', function () {
+      const nav = document.querySelector( 'nav' );
+      if ( window.scrollY > 100 ) {
+        nav.style.background = 'rgba(255, 255, 255, 0.98)';
+      } else {
+        nav.style.background = 'rgba(255, 255, 255, 0.95)';
+      }
+    } );
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver( ( entries ) => {
+      entries.forEach( entry => {
+        if ( entry.isIntersecting ) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      } );
+    }, observerOptions );
+
+    // Observe elements for animation
+    document.querySelectorAll( '.animate-fadeInUp, .animate-slideInLeft, .animate-slideInRight' ).forEach( el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      observer.observe( el );
+    } );
+
+    // Hotel search validation function
+    function searchHotels() {
+  const destination = document.getElementById('hotelDestination').value.trim();
+  const checkin = document.getElementById('hotelCheckin').value;
+  const checkout = document.getElementById('hotelCheckout').value;
+
+  // Validation
+  if (!destination || !checkin || !checkout) {
+    alert('Please enter full details');
+    if (!destination) document.getElementById('hotelDestination').focus();
+    else if (!checkin) document.getElementById('hotelCheckin').focus();
+    else document.getElementById('hotelCheckout').focus();
+    return;
+  }
+
+  // Check if checkout is after checkin
+  if (new Date(checkout) <= new Date(checkin)) {
+    alert('Check-out date must be after check-in date');
+    document.getElementById('hotelCheckout').focus();
+    return;
+  }
+
+  // Store destination for results page
+  localStorage.setItem('hotelDestination', destination);
+
+  // Redirect to hotel results page
+  window.location.href = `/hotel-results?destination=${encodeURIComponent(destination)}&checkin=${checkin}&checkout=${checkout}`;
+}
+
+// Search functionality for recommendations
+function performSearch() {
+  const searchInput = document.getElementById('searchInput');
+  const searchQuery = searchInput.value.trim();
+
+  if (!searchQuery) {
+    alert('Please enter a search term');
+    searchInput.focus();
+    return;
+  }
+
+  // Store the search query in localStorage for the recommendations page
+  localStorage.setItem('searchQuery', searchQuery);
+
+  // Redirect to recommendations page with search parameter
+  window.location.href = `/recomendations?search=${encodeURIComponent(searchQuery)}`;
+}
+
+// Handle Enter key press in search input
+function handleSearchKeyPress(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    performSearch();
+  }
+}
+
+// Quick search function for popular search buttons
+function searchFor(category) {
+  const searchInput = document.getElementById('searchInput');
+  searchInput.value = category;
+  performSearch();
+}
+
+// Focus search input when clicking on search icon
+document.addEventListener('DOMContentLoaded', function() {
+  const searchIcon = document.querySelector('.search-icon');
+  if (searchIcon) {
+    searchIcon.addEventListener('click', function() {
+      document.getElementById('searchInput').focus();
+    });
+  }
+});
+
+// Package search functionality
+function searchPackages() {
+  const from = document.querySelector('#packagesBookingForm input[placeholder="Departure city"]').value.trim();
+  const to = document.querySelector('#packagesBookingForm input[placeholder="Destination city"]').value.trim();
+  const departure = document.querySelector('#packagesBookingForm input[type="date"]').value;
+  const passengers = document.querySelector('#packagesBookingForm select').value;
+
+  // Validation
+  if (!from || !to || !departure || !passengers) {
+    alert('Please fill in all package details');
+    return;
+  }
+
+  // Store search parameters
+  localStorage.setItem('packageSearch', JSON.stringify({
+    from: from,
+    to: to,
+    departure: departure,
+    passengers: passengers
+  }));
+
+  // Redirect to packages page with search parameters
+  window.location.href = `/packages?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&departure=${departure}&passengers=${encodeURIComponent(passengers)}`;
+}
+  </script>
+</body>
+
+</html>
